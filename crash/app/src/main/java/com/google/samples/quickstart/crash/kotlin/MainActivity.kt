@@ -22,11 +22,16 @@ import com.google.samples.quickstart.crash.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var crashlytics: FirebaseCrashlytics
+    private lateinit var customKeySamples: CustomKeySamples
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        customKeySamples = CustomKeySamples(applicationContext)
+        customKeySamples.setSampleCustomKeys()
+        customKeySamples.updateAndTrackNetworkState()
 
         crashlytics = Firebase.crashlytics
 
@@ -69,6 +74,11 @@ class MainActivity : AppCompatActivity() {
         // [START crashlytics_log_event]
         crashlytics.log("Activity created")
         // [END crashlytics_log_event]
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        customKeySamples.stopTrackingNetworkState()
     }
 
     companion object {
